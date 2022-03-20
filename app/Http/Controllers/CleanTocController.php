@@ -47,6 +47,7 @@ class CleanTocController extends Controller
         foreach ($tags as $key => $tag) {
             $depth += 1;
             preg_match_all('/id=\"(.*?)\"/', $tag[0], $string);
+
             if (!blank($string[1])) {
                 $id = $depth.$this->makeId($string[1][0]);
             } else {
@@ -55,9 +56,9 @@ class CleanTocController extends Controller
 
             $level = substr($tag[0], 0, 4);
             $title = $tag[1];
+
             $realTags[$key] = [
                 "level" => $level,
-//                "depth" => $depth,
                 "id" => $id,
                 "title" => $title
             ];
@@ -71,7 +72,7 @@ class CleanTocController extends Controller
         $tagBreakPoints = [];
         $parent = '';
         $children = [];
-        foreach ($tags as $key => $tag) {
+        foreach ($tags as $tag) {
             if (strcmp($firstTag['level'], $tag['level']) < 0) {
                 $parent = $firstTag;
                 $children[] = $tag;
@@ -84,7 +85,6 @@ class CleanTocController extends Controller
                     $tagBreakPoints[] = [
                         "level" => $parent['level'],
                         "title" => $parent['title'],
-//                        "depth" => $parent['depth'],
                         'id' => $parent['id'],
                         "children" => $this->getParentChildTags($children),
                     ];
@@ -100,7 +100,6 @@ class CleanTocController extends Controller
             $tagBreakPoints[] = [
                 "level" => $parent['level'],
                 "title" => $parent['title'],
-//                "depth" => $parent['depth'],
                 "id" => $parent['id'],
                 "children" => $this->getParentChildTags($children),
             ];
@@ -113,7 +112,7 @@ class CleanTocController extends Controller
     {
         $output = "<ol>";
 
-        foreach ($tagsArray as $key => $tag) {
+        foreach ($tagsArray as $tag) {
             $output .= "<li>
                             <a href=\"#{$tag['id']}\">
                                 {$tag['title']}
