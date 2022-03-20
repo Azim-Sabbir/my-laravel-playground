@@ -1,0 +1,35 @@
+{
+  "name": "html-contents",
+  "version": "0.2.0",
+  "description": "Creates HTML and accessible table of contents inside DOM element. Links to header elements. Customizable levels.",
+  "main": "html-contents.js",
+  "scripts": {
+    "test": "mocha spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psalmody/html-contents.git"
+  },
+  "keywords": [
+    "toc",
+    "table-of-contents",
+    "html",
+    "accessible"
+  ],
+  "author": "Michael Tallino @psalmody",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/psalmody/html-contents/issues"
+  },
+  "homepage": "https://github.com/psalmody/html-contents#readme",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "gulp": "^4.0.2",
+    "gulp-livereload": "^4.0.2",
+    "gulp-nodemon": "^2.5.0",
+    "gulp-watch": "^5.0.1"
+  },
+  "dependencies": {
+    "yargs-parser": "^20.0.0"
+  }
+}
