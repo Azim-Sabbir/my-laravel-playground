@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+
 class CleanTocController extends Controller
 {
     public function index()
     {
+//        $html = DB::table('posts')->select('description')->where('id', 565)->first()->description;
+        $supportedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        $supportedTagLevels = str_replace("h", "", $supportedTags);
+        $supportedTagLevels = implode(",", $supportedTagLevels);
+
         $html = '
             <h2 id="Rumi-F">Hello h2</h2>
             <h2 id="Sabbir asd">Hello h2</h2>
-                <h3>Hello h3</h3>
+                <h3>Hello h3</h3>x``
                     <h4>Hello h4</h4>
                         <h5>Hello h5</h5>
                             <h6>Hello h6</h6>
@@ -31,16 +38,17 @@ class CleanTocController extends Controller
             <h1>Sabbir h1</h1>
 ';
 
-        $parentChildArray = $this->getToc($html);
+        $parentChildArray = $this->getToc($html, $supportedTagLevels);
 
         $tocOutput = $this->generateTableOfContent($parentChildArray);
         $content = $this->addAnchorToHeadingTags($html);
         return view('welcome', compact('tocOutput', 'content'));
     }
 
-    function getToc($html)
+    function getToc($html, $supportedTagLevels)
     {
-        preg_match_all('|<\s*h[1-6](?:.*)>(.*)</\s*h|Ui', $html, $tags, PREG_SET_ORDER);
+        preg_match_all('|<\s*h[' . $supportedTagLevels . '](?:.*)>(.*)</\s*h|Ui', $html, $tags, PREG_SET_ORDER);
+
         $realTags = [];
         $depth = 1;
 
@@ -49,9 +57,9 @@ class CleanTocController extends Controller
             preg_match_all('/id=\"(.*?)\"/', $tag[0], $string);
 
             if (!blank($string[1])) {
-                $id = $depth.$this->makeId($string[1][0]);
+                $id = $depth . $this->makeId($string[1][0]);
             } else {
-                $id = $depth.$this->makeId($tag[1]);
+                $id = $depth . $this->makeId($tag[1]);
             }
 
             $level = substr($tag[0], 0, 4);
@@ -110,7 +118,9 @@ class CleanTocController extends Controller
 
     public function generateTableOfContent($tagsArray)
     {
-        $output = "<ol>";
+        $tocNumbering = [0 => '<ol>', 1 => '<ul>'];
+        $selectedNumberingFormat = $tocNumbering[0];
+        $output = $selectedNumberingFormat;
 
         foreach ($tagsArray as $tag) {
             $output .= "<li>
@@ -121,7 +131,7 @@ class CleanTocController extends Controller
                         </li>";
         }
 
-        return $output . "</ol>";
+        return $output . $this->listTagCloser($selectedNumberingFormat);
     }
 
     public function tagCloser($tag)
@@ -129,6 +139,13 @@ class CleanTocController extends Controller
         $tagLevel = mb_substr($tag, 2, 1);
 
         return "</h{$tagLevel}>";
+    }
+
+    public function listTagCloser($tag)
+    {
+        $tagLevel = mb_substr($tag, 1, 3);
+
+        return "</{$tagLevel}";
     }
 
     public function makeId($string)
@@ -141,21 +158,21 @@ class CleanTocController extends Controller
         $depth = 1;
         $html = preg_replace_callback(
             '/(\<h[1-6](.*?))\>(.*)(<\/h[1-6]>)/i',
-            function ($matches)  use (&$depth){
+            function ($matches) use (&$depth) {
                 $level = $depth += 1;
                 preg_match_all('/id=\"(.*?)\"/', $matches[0], $string);
                 if (!blank($string[1])) {
-                    $id = $level.$this->makeId($string[1][0]);
-                    $matches[1] = preg_replace("/". $string[0][0] ."/", "id=".$id, $matches[1]);
-                    $hash_link = '<span id="' .$id . '" class="anchor"
+                    $id = $level . $this->makeId($string[1][0]);
+                    $matches[1] = preg_replace("/" . $string[0][0] . "/", "id=" . $id, $matches[1]);
+                    $hash_link = '<span id="' . $id . '" class="anchor"
                      style="cursor: pointer;margin-left: 10px;"
-                    onclick="copyTitleToClipboard(`' .$id . '`)">#</span>';
+                    onclick="copyTitleToClipboard(`' . $id . '`)">#</span>';
                 } else {
                     $id = $this->makeId($matches[3]);
-                    $matches[1] = $matches[1] . " id=" . $level.$id ;
-                    $hash_link = '<span id="' . $level.$id . '" class="anchor"
+                    $matches[1] = $matches[1] . " id=" . $level . $id;
+                    $hash_link = '<span id="' . $level . $id . '" class="anchor"
                      style="cursor: pointer;margin-left: 10px;"
-                    onclick="copyTitleToClipboard(`' . $level.$id . '`)">#</span>';
+                    onclick="copyTitleToClipboard(`' . $level . $id . '`)">#</span>';
                 }
                 return $matches[1] . ">" . $matches[3] . $hash_link . $matches[4];
             },
