@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-
 class CleanTocController extends Controller
 {
+    protected $configs = [
+        "hierarchy" => false,
+        "supportedHeadings" => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        "tocNumbering" => false,
+    ];
+
     public function getToc()
     {
-        $supportedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        $supportedTags = $this->configs['supportedHeadings'];
         $supportedTagLevels = str_replace("h", "", $supportedTags);
         $supportedTagLevels = implode(",", $supportedTagLevels);
 
@@ -74,10 +78,15 @@ class CleanTocController extends Controller
 
     public function getParentChildTags($tags)
     {
+        if ($this->configs['hierarchy'] == false){
+            return $tags;
+        }
+
         $firstTag = $tags[0] ?? null;
         $tagBreakPoints = [];
         $parent = '';
         $children = [];
+
         foreach ($tags as $tag) {
             if (strcmp($firstTag['level'], $tag['level']) < 0) {
                 $parent = $firstTag;
@@ -116,8 +125,11 @@ class CleanTocController extends Controller
 
     public function generateTableOfContent($tagsArray)
     {
-        $tocNumbering = [0 => '<ol>', 1 => '<ul>'];
-        $selectedNumberingFormat = $tocNumbering[0];
+        if ($this->configs['hierarchy'] == false){
+            return $this->tocWithoutHierarchy($tagsArray);
+        }
+
+        $selectedNumberingFormat = $this->configs['tocNumbering'] == true ? '<ol>' : '<ul>';
         $output = $selectedNumberingFormat;
 
         foreach ($tagsArray as $tag) {
@@ -178,5 +190,22 @@ class CleanTocController extends Controller
         );
 
         return $html;
+    }
+
+    public function tocWithoutHierarchy($tagsArray)
+    {
+        $selectedNumberingFormat = $this->configs['tocNumbering'] == true ? '<ol>' : '<ul>';
+        $output = $selectedNumberingFormat;
+
+        foreach ($tagsArray as $tag) {
+            $output .= "<li>
+                            <a href=\"#{$tag['id']}\">
+                                {$tag['title']}
+                            </a>
+                        </li>";
+        }
+
+        return $output . $this->listTagCloser($selectedNumberingFormat);
+
     }
 }
