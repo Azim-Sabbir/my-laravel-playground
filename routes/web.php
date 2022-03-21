@@ -13,4 +13,4 @@ Route::get('/toc', [TocController::class, 'index']);
 Route::get('/test', [TestController::class,'index']);
 Route::get('/self', [SelfController::class,'index']);
 Route::get('/try', [TryController::class,'index']);
-Route::get('/get-toc', [CleanTocController::class,'index']);
+Route::get('/get-toc', [CleanTocController::class,'getToc']);

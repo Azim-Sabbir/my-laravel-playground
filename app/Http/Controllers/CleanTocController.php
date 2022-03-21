@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class CleanTocController extends Controller
 {
-    public function index()
+    public function getToc()
     {
-//        $html = DB::table('posts')->select('description')->where('id', 565)->first()->description;
         $supportedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         $supportedTagLevels = str_replace("h", "", $supportedTags);
         $supportedTagLevels = implode(",", $supportedTagLevels);
@@ -38,14 +37,13 @@ class CleanTocController extends Controller
             <h1>Sabbir h1</h1>
 ';
 
-        $parentChildArray = $this->getToc($html, $supportedTagLevels);
-
+        $parentChildArray = $this->formatTagsFromArray($html, $supportedTagLevels);
         $tocOutput = $this->generateTableOfContent($parentChildArray);
         $content = $this->addAnchorToHeadingTags($html);
         return view('welcome', compact('tocOutput', 'content'));
     }
 
-    function getToc($html, $supportedTagLevels)
+    function formatTagsFromArray($html, $supportedTagLevels)
     {
         preg_match_all('|<\s*h[' . $supportedTagLevels . '](?:.*)>(.*)</\s*h|Ui', $html, $tags, PREG_SET_ORDER);
 
