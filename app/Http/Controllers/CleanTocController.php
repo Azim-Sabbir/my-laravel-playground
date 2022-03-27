@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 class CleanTocController extends Controller
 {
     protected $configs = [
-        "hierarchy" => false,
+        "hierarchy" => true,
         "supportedHeadings" => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-        "tocNumbering" => false,
+        "tocNumbering" => true,
     ];
 
     public function getToc()
@@ -16,30 +16,30 @@ class CleanTocController extends Controller
         $supportedTagLevels = str_replace("h", "", $supportedTags);
         $supportedTagLevels = implode(",", $supportedTagLevels);
 
-        $html = '
-            <h2 id="Rumi-F">Hello h2</h2>
-            <h2 id="Sabbir asd">Hello h2</h2>
-                <h3>Hello h3</h3>x``
-                    <h4>Hello h4</h4>
-                        <h5>Hello h5</h5>
-                            <h6>Hello h6</h6>
+//        $html = '
+//            <h2 id="Rumi-F">Hello h2</h2>
+//            <h2 id="Sabbir asd">Hello h2</h2>
+//                <h3>Hello h3</h3>
+//                    <h4>Hello h4</h4>
+//                        <h5>Hello h5</h5>
+//                            <h6>Hello h6</h6>
+//
+//            <h2>Hello h2</h2>
+//                <h3 id="Sabbir">Hello h3</h3>
+//
+//            <h1>Hello h1</h1>
+//                <h3>Hello h3</h3>
+//                    <h4 id="my name is Rumi">Hello h4</h4>
+//
+//            <h1>Hello h1</h1>
+//                <h2>Hello h2</h2>
+//
+//            <h1>Sabbir h1</h1>
+//                <h3>Hello h3</h3>
+//                <h2>Hello h2</h2>
+//                    <h5>Hello h5</h5>
+//            <h1>Sabbir h1</h1>
 
-            <h2>Hello h2</h2>
-                <h3 id="Sabbir">Hello h3</h3>
-
-            <h1>Hello h1</h1>
-                <h3>Hello h3</h3>
-                    <h4 id="my name is Rumi">Hello h4</h4>
-
-            <h1>Hello h1</h1>
-                <h2>Hello h2</h2>
-
-            <h1>Sabbir h1</h1>
-                <h3>Hello h3</h3>
-                <h2>Hello h2</h2>
-                    <h5>Hello h5</h5>
-            <h1>Sabbir h1</h1>
-';
 
         $parentChildArray = $this->formatTagsFromArray($html, $supportedTagLevels);
         $tocOutput = $this->generateTableOfContent($parentChildArray);
@@ -123,7 +123,7 @@ class CleanTocController extends Controller
         return $tagBreakPoints;
     }
 
-    public function generateTableOfContent($tagsArray)
+    public function generateTableOfContent($tagsArray, $prevKey = '')
     {
         if ($this->configs['hierarchy'] == false){
             return $this->tocWithoutHierarchy($tagsArray);
