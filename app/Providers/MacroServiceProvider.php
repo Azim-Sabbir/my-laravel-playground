@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Mixins\StrMixins;
 use Illuminate\Http\Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class MacroServiceProvider extends ServiceProvider
@@ -22,6 +24,7 @@ class MacroServiceProvider extends ServiceProvider
      * Bootstrap services.
      *
      * @return void
+     * @throws \ReflectionException
      */
     public function boot()
     {
@@ -32,5 +35,7 @@ class MacroServiceProvider extends ServiceProvider
                 "code" => $code,
             ]);
         });
+
+        Str::mixin(new StrMixins());
     }
 }
