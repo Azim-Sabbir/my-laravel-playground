@@ -1,0 +1,36 @@
+{
+    "Illuminate\Auth\RequestGuard",
+    "Illuminate\Auth\SessionGuard",
+    "Illuminate\Cache\Repository",
+    "Illuminate\Console\Command",
+    "Illuminate\Console\Scheduling\Event",
+    "Illuminate\Cookie\CookieJar",
+    "Illuminate\Database\Eloquent\FactoryBuilder",
+    "Illuminate\Database\Eloquent\Relations\Relation",
+    "Illuminate\Database\Grammar",
+    "Illuminate\Database\Query\Builder",
+    "Illuminate\Database\Schema\Blueprint",
+    "Illuminate\Filesystem\Filesystem"
+    "Illuminate\Foundation\Testing\TestResponse"
+    "Illuminate\Http\JsonResponse"
+    "Illuminate\Http\RedirectResponse"
+    "Illuminate\Http\Request"
+    "Illuminate\Http\Response"
+    "Illuminate\Http\UploadedFile"
+    "Illuminate\Mail\Mailer"
+    "Illuminate\Routing\PendingResourceRegistration"
+    "Illuminate\Routing\Redirector"
+    "Illuminate\Routing\ResponseFactory"
+    "Illuminate\Routing\Route"
+    "Illuminate\Routing\Router"
+    "Illuminate\Routing\UrlGenerator"
+    "Illuminate\Support\Arr"
+    "Illuminate\Support\Collection"
+    "Illuminate\Support\LazyCollection"
+    "Illuminate\Support\Str"
+    "Illuminate\Support\Testing\Fakes\NotificationFake"
+    "Illuminate\Translation\Translator"
+    "Illuminate\Validation\Rule"
+    "Illuminate\View\Factory"
+    "Illuminate\View\View"
+}
